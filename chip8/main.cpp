@@ -110,12 +110,27 @@ void Chip8::execute()
 
     }
 ///////////////////////////////////////LD Vx, byte
+
+    if ((opcode & 0xF000)==0x6000)
+    {
+
+        auto x = (opcode & 0x0F00) >> 8;
+        auto kk = opcode & 0x00FF;
+
+        V[x]=kk;
+
+        cout << "V" << x << " = " << hex << kk << endl;
+    }
+
+//////////////////////////////////////////ADD Vx, byte
+
+
 }
 
 int main()
 {
     Chip8 emu;
-    emu.opcode = 0x3333;
+    emu.opcode = 0x6244;
     emu.execute();
 
     return 0;
