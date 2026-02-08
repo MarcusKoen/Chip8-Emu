@@ -15,10 +15,12 @@ class Chip8
 public:
 
     uint8_t memory[4096]; // Why 8 bit when 2^8 = 256 < 4096 bits
-    uint16_t pc; //http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
-    uint8_t V[16];// why do I have this TODO
+    uint16_t pc;
+    uint8_t V[16];
     uint16_t opcode;
     uint8_t sp; //maybe change to 16
+    uint16_t I;
+
 
     uint16_t stack[16];
 
@@ -200,6 +202,29 @@ void Chip8::execute()
         cout << "8xy4 - ADD Vx, Vy" << endl;
     }
     //TODO all 8xy567E
+/////////////////////////////////////8xy5 - SUB Vx, Vy
+    if (((opcode & 0xF000)==0x8000)&&(opcode & 0x000F)==5)
+    {
+
+        auto x = (opcode & 0x0F00) >> 8;
+        auto y = (opcode & 0x00F0) >> 4;
+
+        V[x] = V[x] + V[y];//TODO VF flag
+
+        cout << "8xy5 - SUB Vx, Vy" << endl;
+    }
+
+/////////////////////////////////// 8xy6 - SHR Vx {, Vy}
+    if (((opcode & 0xF000)==0x8000)&&(opcode & 0x000F)==5)
+    {
+
+        auto x = (opcode & 0x0F00) >> 8;
+        auto y = (opcode & 0x00F0) >> 4;
+
+        V[x] = V[x] + V[y];//TODO VF flag
+
+        cout << "8xy5 - SUB Vx, Vy" << endl;
+    }
 
 ///////////////////////////////////////// 9xy0 - SNE Vx, Vy
     if (((opcode & 0xF000)==0x9000)&&(opcode & 0x000F)==0)
@@ -228,10 +253,19 @@ void Chip8::execute()
         cout << "Bnnn - JP V0, addr" << endl;
     }
 
+///////////////////////////////Annn - LD I, addr
 
+    if ((opcode & 0xF000)==0xA000)
+    {
 
+        auto nnn = opcode & 0x0FFF;
+        I = nnn; // shifting - no already lwoer bits
+        cout << "Annn - LD I, addr" << endl;
+    }
+
+/////////////////////////////
 }
-
+/*
 void Chip8::cycle()
 {
     // Fetch
@@ -240,7 +274,7 @@ void Chip8::cycle()
     // Decode + Execute
     execute();
 }
-
+/*
 Chip8::Chip8()
 {
     pc = 0x200;   // CHIP-8 programs start here
@@ -251,11 +285,12 @@ Chip8::Chip8()
     memset(V, 0, sizeof(V));
     memset(stack, 0, sizeof(stack));
 }
+*/
 
 int main()
 {
     Chip8 emu;
-    emu.opcode = 0xB230;
+    emu.opcode = 0x8005;
     emu.execute();
 
     return 0;
